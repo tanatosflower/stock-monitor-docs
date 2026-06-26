@@ -1,8 +1,16 @@
 /* docs/.vitepress/theme/custom.css */
+/* mermaid 図を中央寄せにする */
 .mermaid {
   display: flex;
   justify-content: center;
 }
 .mermaid svg {
   margin: 0 auto;
+}
+
+/* 表のセルが「固定／枠」のように途中で縦割れするのを防ぐ。
+   日本語の単語の途中では改行せず、長いセルだけ普通に折り返す。 */
+.vp-doc th,
+.vp-doc td {
+  word-break: keep-all;
 }

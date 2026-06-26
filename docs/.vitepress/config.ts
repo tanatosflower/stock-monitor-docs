@@ -1,9 +1,10 @@
 import { defineConfig } from 'vitepress'
 import { withMermaid } from 'vitepress-plugin-mermaid'
+import cjkFriendly from 'markdown-it-cjk-friendly'
 
 // withMermaid でラップすると ```mermaid コードブロックが図としてレンダリングされる
-export default withMermaid(
-  defineConfig({
+export default withMermaid({
+  ...defineConfig({
     lang: 'ja-JP',
     title: 'stock-monitor',
     description: '理不尽に安く売られた優良株を自動で狩るハンティングシステム — 思想と仕組みの解説',
@@ -13,6 +14,15 @@ export default withMermaid(
 
     lastUpdated: true,
     cleanUrls: true,
+
+    // ── Markdown 拡張 ──────────────────────────────────
+    // VitePress 1.x は日本語の直後に来る **「…」 等を太字と認識できない弱点がある。
+    // markdown-it-cjk-friendly を足すと CJK でも **bold** が正しく効く（2.0 の標準と同じ）。
+    markdown: {
+      config: (md) => {
+        md.use(cjkFriendly)
+      },
+    },
 
     head: [
       ['meta', { name: 'theme-color', content: '#3c8772' }],
@@ -71,4 +81,4 @@ export default withMermaid(
       // 本体リポジトリが private のため editLink は省略（公開リンクにならないよう注意）
     },
   })
-)
+})

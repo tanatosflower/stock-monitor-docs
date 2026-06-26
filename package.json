@@ -10,8 +10,9 @@
     "docs:preview": "vitepress preview docs"
   },
   "devDependencies": {
+    "markdown-it-cjk-friendly": "^2.0.2",
+    "mermaid": "^11.4.1",
     "vitepress": "^1.6.4",
-    "vitepress-plugin-mermaid": "^2.0.17",
-    "mermaid": "^11.4.1"
+    "vitepress-plugin-mermaid": "^2.0.17"
   }
 }
