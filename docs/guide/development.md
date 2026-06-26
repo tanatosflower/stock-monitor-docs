@@ -132,7 +132,6 @@ agent-resolve とは別に、通常のプランモードで立てた計画も、
 | `file-issue` | 議論で出た課題を構造化して GitHub issue に起票する |
 | `check-consistency` | ドキュメント・コード・テスト・設定の整合性をチェックし、ドリフト（ずれ）を報告する |
 | `check-azure-logs` | Azure のログを点検し、動作上・設計上の問題を洗い出す（監査） |
-| `peek-azure-logs` | 直近のログを素早く取得して一覧する（軽量な状況確認） |
 | `download-blob-logs` | Azure Blob の JSONL ログを期間指定でダウンロードして整理する |
 | `lint-markdown` | リポジトリ内の Markdown を整形・是正する |
 | `housekeep` | エージェントのメタデータ（メモリ・worktree 等）を棚卸しして清掃する |
