@@ -10,6 +10,9 @@ hero:
       text: アプリを理解する
       link: /guide/overview
     - theme: alt
+      text: 機能を知る
+      link: /guide/features
+    - theme: alt
       text: 開発プロセスを見る
       link: /guide/development
 

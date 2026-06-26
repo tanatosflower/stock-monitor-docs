@@ -10,14 +10,18 @@
 stock-monitor-docs/
 ├── docs/
 │   ├── .vitepress/
-│   │   └── config.ts          # サイト設定（ナビ・サイドバー・検索・mermaid）
-│   ├── index.md               # トップページ
+│   │   ├── config.ts          # サイト設定（ナビ・サイドバー・検索・mermaid）
+│   │   └── theme/
+│   │       ├── index.ts       # DefaultTheme 拡張 + custom.css 読み込み
+│   │       └── custom.css     # mermaid 中央寄せ、表セルの日本語折返し等
+│   ├── index.md               # トップページ（layout: home）
 │   └── guide/
-│       ├── overview.md        # アプリそのものの説明資料
-│       └── development.md      # 開発プロセスの説明資料
+│       ├── overview.md        # アプリ解説・システム全体像
+│       ├── features.md        # 機能ガイド
+│       └── development.md     # 開発プロセスの説明
 ├── package.json
 └── .github/workflows/
-    └── deploy.yml             # （任意）ビルド確認用 CI
+    └── deploy.yml             # ビルド確認用 CI
 ```
 
 ## ローカルで動かす
@@ -49,23 +53,12 @@ npm run docs:preview    # ビルド結果をローカル配信
 
 push のたびに自動でビルド＆デプロイされます。
 
-## 本体（private）からの自動同期
-
-概説 Markdown のマスターは本体 private リポジトリの `docs/public/` 側に置き、編集はそちらで行うのが推奨です（コードと一緒に PR レビューに乗るため、ドキュメントがコードからズレにくい）。本体側で更新したら、GitHub Actions でこの公開リポジトリへ自動コピーします。
-
-セットアップ手順は本体リポジトリに置く `sync-docs-to-public.yml`（このリポジトリの `for-private-repo/` に同梱）を参照してください。要点だけ:
-
-1. この公開リポジトリへ push できる権限を持つトークン（Fine-grained PAT か deploy key）を発行する。**トークンの発行・登録は手作業で行ってください。**
-2. 本体リポジトリの Secrets にそのトークンを登録する。
-3. 本体の `docs/public/**` が変わったら、ワークフローがこのリポジトリの `docs/guide/` を上書きコミットする。
-4. この公開リポジトリに push が入ると Vercel/Netlify が自動ビルドする。
-
-> 手動コピーは避けてください。二重管理になり、ドキュメントが少しずつコードからズレていきます（docs drift）。同期は必ず自動化するのが吉です。
-
 ## 日本語の全文検索について
 
 標準のローカル検索（minisearch）でも日本語は引けますが、語の区切り（トークナイズ）が弱く、ヒット精度が物足りないことがあります。実用で困ったら [Algolia DocSearch](https://docsearch.algolia.com/) への切り替えを検討してください（`config.ts` の `search.provider` を差し替え）。
 
-## mermaid 図について
+## mermaid / CJK について
 
-概説内のフロー図は [mermaid](https://mermaid.js.org/) で描いています。`vitepress-plugin-mermaid` を `config.ts` の `withMermaid()` で有効化済みです。図を使わない場合はプラグインを外し、該当の ```mermaid ブロックを削除してください。
+概説内のフロー図は [mermaid](https://mermaid.js.org/) で描いています。`vitepress-plugin-mermaid` を `config.ts` の `withMermaid()` で有効化済みです。
+
+CJK の `**bold**` が壊れる問題は `markdown-it-cjk-friendly` プラグインで対処しています。フォントサイズや CJK グリフ切れの調整は `config.ts` の `mermaid.themeVariables`、図の中央寄せや表セルの折返しは `theme/custom.css` で行っています。
