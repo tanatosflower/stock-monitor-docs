@@ -1,0 +1,8 @@
+/* docs/.vitepress/theme/custom.css */
+.mermaid {
+  display: flex;
+  justify-content: center;
+}
+.mermaid svg {
+  margin: 0 auto;
+}
