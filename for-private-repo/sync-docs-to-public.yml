@@ -1,0 +1,65 @@
+# ┌─────────────────────────────────────────────────────────────────────┐
+# │ これは「本体 private リポジトリ」側に置くワークフローです。            │
+# │ → 本体の  .github/workflows/sync-docs-to-public.yml  として配置。      │
+# │                                                                       │
+# │ 役割: 本体の docs/public/** が更新されたら、その Markdown を           │
+# │       公開リポジトリ stock-monitor-docs の docs/guide/ へコピーして    │
+# │       自動コミット・push する。あとは Vercel/Netlify が拾ってビルド。   │
+# └─────────────────────────────────────────────────────────────────────┘
+#
+# 事前準備（手作業・1回だけ）:
+#   1. 公開リポジトリへ push できる Fine-grained PAT を発行する
+#      （対象を stock-monitor-docs に限定 / Contents: Read and write）。
+#      ※ トークンの発行・登録は必ず自分の手で行ってください。
+#   2. 本体リポジトリの Settings → Secrets and variables → Actions に
+#      DOCS_SYNC_TOKEN という名前で登録する。
+#   3. 本体側で概説 Markdown を docs/public/ 配下に置いて編集する
+#      （例: docs/public/overview.md, docs/public/development.md）。
+
+name: sync-docs-to-public
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/public/**'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source (private)
+        uses: actions/checkout@v4
+        with:
+          path: source
+
+      - name: Checkout target (public docs site)
+        uses: actions/checkout@v4
+        with:
+          repository: <your-account>/stock-monitor-docs
+          token: ${{ secrets.DOCS_SYNC_TOKEN }}
+          path: target
+
+      - name: Copy curated docs
+        run: |
+          mkdir -p target/docs/guide
+          # 公開したい概説だけを明示的にコピー（リファレンスは同期しない）
+          rsync -av --delete \
+            --include='overview.md' \
+            --include='development.md' \
+            --exclude='*' \
+            source/docs/public/ target/docs/guide/
+
+      - name: Commit & push if changed
+        working-directory: target
+        run: |
+          git config user.name  "docs-sync-bot"
+          git config user.email "docs-sync-bot@users.noreply.github.com"
+          if [ -n "$(git status --porcelain)" ]; then
+            git add docs/guide
+            git commit -m "sync: update docs from source@${GITHUB_SHA::7}"
+            git push
+          else
+            echo "No changes to sync."
+          fi
