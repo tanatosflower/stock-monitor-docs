@@ -33,6 +33,7 @@ export default withMermaid({
     themeConfig: {
       nav: [
         { text: 'アプリ解説', link: '/guide/overview' },
+        { text: '機能ガイド', link: '/guide/features' },
         { text: '開発プロセス', link: '/guide/development' },
       ],
 
@@ -45,6 +46,7 @@ export default withMermaid({
           text: 'システムの解説',
           items: [
             { text: 'stock-monitor とは（アプリ解説）', link: '/guide/overview' },
+            { text: '機能ガイド', link: '/guide/features' },
             { text: '開発プロセス', link: '/guide/development' },
           ],
         },
