@@ -80,5 +80,15 @@ export default withMermaid({
 
       // 本体リポジトリが private のため editLink は省略（公開リンクにならないよう注意）
     },
-  })
+  }),
+
+  // ── mermaid 図の表示設定 ──────────────────────────────
+  mermaid: {
+    theme: 'default',
+    themeVariables: {
+      fontSize: '18px',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Noto Sans JP", Meiryo, sans-serif',
+    }
+  }
+
 })
