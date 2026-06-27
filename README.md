@@ -21,10 +21,11 @@ stock-monitor-docs/
 │       ├── overview.md        # アプリ解説・システム全体像
 │       ├── features.md        # 機能ガイド
 │       ├── development.md     # 開発プロセスの説明
-│       └── operations.md      # 運用・チューニングガイド
+│       ├── operations.md      # 運用・チューニングガイド
+│       └── glossary.md        # 用語集
 ├── slides/
-│   ├── intro.md               # 概要紹介デッキ（雛形）
-│   └── architecture.md        # システム構成デッキ（mermaid 図付き、雛形）
+│   ├── intro.md               # 概要紹介デッキ（Slidev）
+│   └── architecture.md        # システム構成デッキ（mermaid 図付き、Slidev）
 ├── SLIDES.md                  # Slidev デッキ起動・エクスポート・追加手順
 ├── package.json
 └── .github/workflows/

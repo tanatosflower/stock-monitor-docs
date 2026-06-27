@@ -7,8 +7,8 @@
 
 | ファイル | 内容 |
 | --- | --- |
-| `intro.md` | stock-monitor 概要紹介（はじめての人向け雛形） |
-| `architecture.md` | システム構成紹介（mermaid フロー図付き雛形） |
+| `intro.md` | stock-monitor 概要紹介（歪みの狙い・2つのウォッチリスト・判定の仕組みを解説） |
+| `architecture.md` | システム構成紹介（コンポーネント・処理フロー・インフラを mermaid 図付きで解説） |
 
 ## 起動
 

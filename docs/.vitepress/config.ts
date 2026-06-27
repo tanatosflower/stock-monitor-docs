@@ -2,11 +2,6 @@ import { defineConfig } from 'vitepress'
 import { withMermaid } from 'vitepress-plugin-mermaid'
 import cjkFriendly from 'markdown-it-cjk-friendly'
 
-// サイト全体で共有するバージョン番号の SSOT。
-// バージョンを上げるときはここだけ変更すれば全 guide ページに反映される。
-// （本体 stock/__init__.py との同期は release スキルの手順で行うこと）
-const SITE_VERSION = 'v1.17.0'
-
 // withMermaid でラップすると ```mermaid コードブロックが図としてレンダリングされる
 export default withMermaid({
   ...defineConfig({
@@ -35,20 +30,13 @@ export default withMermaid({
       ['meta', { property: 'og:title', content: 'stock-monitor ドキュメント' }],
     ],
 
-    // guide/ 配下の各ページ frontmatter に version を注入する。
-    // 各 .md ファイル側では version: 行を書かず、{{ $frontmatter.version }} で参照するだけでよい。
-    transformPageData(pageData) {
-      if (pageData.relativePath.startsWith('guide/')) {
-        pageData.frontmatter.version = SITE_VERSION
-      }
-    },
-
     themeConfig: {
       nav: [
         { text: 'アプリ解説', link: '/guide/overview' },
         { text: '機能ガイド', link: '/guide/features' },
         { text: '運用・チューニング', link: '/guide/operations' },
         { text: '開発プロセス', link: '/guide/development' },
+        { text: '用語集', link: '/guide/glossary' },
       ],
 
       sidebar: [
@@ -62,6 +50,7 @@ export default withMermaid({
             { text: 'stock-monitor とは（アプリ解説）', link: '/guide/overview' },
             { text: '機能ガイド', link: '/guide/features' },
             { text: '運用・チューニングガイド', link: '/guide/operations' },
+            { text: '用語集', link: '/guide/glossary' },
           ],
         },
         {

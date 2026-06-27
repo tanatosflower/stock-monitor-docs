@@ -8,50 +8,95 @@ fonts:
 
 # システム構成
 
-stock-monitor のコンポーネント構成と処理フローを説明します。
+stock-monitor がどう動いているか——コンポーネントと処理フローを解説します
 
 ---
 
 ## コンポーネント全体像
 
 ```mermaid
-flowchart TD
-    Timer["Azure Functions\nタイマートリガー（5分）"]
-    Price["price.py\n株価取得（yfinance）"]
-    News["news.py\nニュース取得（Google News RSS）"]
-    Evaluator["evaluator.py\nLLM 重要度・下落パターン判定\n（OpenRouter）"]
-    Notifier["notifier.py\nDiscord Webhook 送信"]
-    Store["state.json / Blob Storage\nステート管理"]
+flowchart LR
+    subgraph Azure
+        F[タイマー<br/>5分ごと]
+        B[(状態・ログ保存)]
+        F --- B
+    end
+    F -->|株価取得| Y[yfinance]
+    F -->|ニュース取得| G[Google News RSS]
+    F -->|重要度・パターン判定| L[LLM<br/>OpenRouter]
+    F -->|Discord 通知| D[Discord Webhook]
+```
 
-    Timer -->|起動| Price
-    Timer -->|起動| News
-    Price -->|株価・前日比| Store
-    News -->|新着ニュース| Evaluator
-    Store -->|保存済みアラート履歴| Evaluator
-    Evaluator -->|重要度・センチメント| Notifier
-    Price -->|マイルストーン到達| Notifier
+Azure Functions の単一タイマートリガーで完結するシンプルな構成
+
+---
+
+## 5分ごとの処理フロー
+
+```mermaid
+flowchart TD
+    A[タイマー起動] --> B[株価チェック]
+    A --> C[ニュース取得・重要度評価]
+    B -- 下落アラート --> D[下落パターン分析<br/>ルール＋LLM]
+    C -- 重要度が閾値以上 --> E[ニュース通知]
+    D --> F[買い場候補 / 要確認 /<br/>下落パターンを Discord 通知]
+    A --> G[テーゼ崩壊監視<br/>ニュース起点]
+    G -- 崩壊の疑い --> H[⚠️ 撤退検討を即時通知]
 ```
 
 ---
 
-## 処理フロー詳細
+## 株価監視——マイルストーン型アラート
 
-1. **Azure Functions タイマートリガー**（5分間隔）が起動
-2. **price.py** が yfinance から株価を取得し、前日比がマイルストーン（閾値の倍数）を超えたら即時アラート
-3. **news.py** が Google News RSS を検索し新着記事を抽出
-4. **evaluator.py** が OpenRouter へ記事内容を投げ、重要度（1〜10）・センチメント・下落パターンを LLM 判定
-5. 条件成立時は **notifier.py** が Discord Webhook（株価用 / ニュース用）へ送信
+- 前日比が閾値の倍数（マイルストーン）を超えるたびに追加アラート
+- 同じ段階への再通知は防止。日付をまたいでリセット
+- **glitch ガード**: 前日比 30% 超・サイクル間 15% 超の異常値を除外
 
 ---
 
-## 並列処理の仕組み
+## 下落パターン分析——二層判定
 
-- 銘柄ごとの処理は `_concurrent.py`（`ThreadPoolExecutor` ラッパー）で並列実行
-- 同時実行数は `config.json` の `max_parallel_stocks` で調整
-- ステート（送信済みGUID・アラート日）は `state.py` が管理し、5分ごとの重複通知を防止
+**第一層（ルールベース）で確定できない場合のみ LLM へ**
+
+| 第一層で確定するパターン | 条件 |
+| --- | --- |
+| ファンダメンタル懸念 | 高重要度の悪材料 ＋ 高出来高 |
+| 市場全体の下落 | 日経225との連動範囲内 |
+| ノイズ | 出来高・ニュースともに薄い |
+
+第二層（LLM）では残りの4パターンを定性判断
+
+---
+
+## 出力ガード——安全弁の多重化
+
+LLM の判定にも4つの安全弁
+
+| ガード | 働き |
+| --- | --- |
+| クラッシュガード | 大暴落 × 好材料なし → 見送り |
+| 内生キル | 原油安 × 石油業種 → 見送り |
+| 資金ローテーション保留 | 現在は観測フェーズのため通知抑制 |
+| 情報真空ガード | ニュース 0 件 → 見送り |
+
+判断できない・立証できないは、すべて「見送り」側に倒す
+
+---
+
+## インフラ——低コストで10年動き続ける
+
+- **Azure Functions** — 従量課金。アイドル時は課金ゼロ
+- **Blob Storage** — 状態・構造化ログ（JSONL）の永続化
+- **Application Insights** — 実行ログ・例外監視
+- 外部サービス（株価・ニュース・LLM・通知）はすべて HTTP で連携
+
+「賢いが続けられない」より「素朴でも10年動き続ける」
 
 ---
 
 ## まとめ
 
-Azure Functions の単一タイマートリガーで完結するシンプルな構成です。銘柄数のスケールは `max_parallel_stocks` の調整で対応できます。
+- Azure 上の **5分タイマー1本**で全処理が完結
+- **ルール＋LLM の二層**で「罠か買い場か」を判定
+- 状態・ログを Blob に保存し、チューニングのデータ源に
+- 最終判断は人間が下す
