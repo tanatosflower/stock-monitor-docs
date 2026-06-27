@@ -7,6 +7,10 @@ docs/.vitepress/cache/
 .env.local
 
 .claude/*
+!.claude/agents/
+!.claude/agents/**
+!.claude/skills/
+!.claude/skills/**
 
 # Slidev ビルド・エクスポート生成物
 dist/
