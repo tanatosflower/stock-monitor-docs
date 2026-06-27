@@ -68,4 +68,5 @@ npm run docs:preview        # ビルド結果のプレビュー
 - 文体規約: **全面日本語・ですます調の読み物トーン**。本体側 docs の硬いリファレンス調とは別物
 - `**bold**` は CJK プラグイン前提で問題ない
 - mermaid フロー図を積極的に使う
+- md を追加・編集したら `npm run lint` でチェックを通すこと。自動整形は `npm run lint:fix`
 - 本体 private リポジトリ `stock-monitor` のファイルは読込のみ。絶対に編集しないこと。
