@@ -35,6 +35,7 @@ export default withMermaid({
         { text: 'アプリ解説', link: '/guide/overview' },
         { text: '機能ガイド', link: '/guide/features' },
         { text: '開発プロセス', link: '/guide/development' },
+        { text: '運用・チューニング', link: '/guide/operations' },
       ],
 
       sidebar: [
@@ -48,6 +49,7 @@ export default withMermaid({
             { text: 'stock-monitor とは（アプリ解説）', link: '/guide/overview' },
             { text: '機能ガイド', link: '/guide/features' },
             { text: '開発プロセス', link: '/guide/development' },
+            { text: '運用・チューニングガイド', link: '/guide/operations' },
           ],
         },
       ],
