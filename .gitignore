@@ -7,7 +7,6 @@ docs/.vitepress/cache/
 .env.local
 
 .claude/*
-CLAUDE.md
 
 # Slidev ビルド・エクスポート生成物
 dist/
