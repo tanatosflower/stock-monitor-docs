@@ -16,39 +16,42 @@ stock-monitor のコンポーネント構成と処理フローを説明します
 
 ```mermaid
 flowchart TD
-    Scheduler["スケジューラ\n(定期起動)"]
-    Fetcher["データ取得\n(Fetcher)"]
-    Evaluator["条件評価\n(Evaluator)"]
-    Notifier["通知送信\n(Notifier)"]
-    Store["データストア\n(DB / Cache)"]
-    APIs["外部証券 API"]
+    Timer["Azure Functions\nタイマートリガー（5分）"]
+    Price["price.py\n株価取得（yfinance）"]
+    News["news.py\nニュース取得（Google News RSS）"]
+    Evaluator["evaluator.py\nLLM 重要度・下落パターン判定\n（OpenRouter）"]
+    Notifier["notifier.py\nDiscord Webhook 送信"]
+    Store["state.json / Blob Storage\nステート管理"]
 
-    Scheduler -->|トリガー| Fetcher
-    Fetcher -->|株価・指標| Store
-    APIs -->|レスポンス| Fetcher
-    Store -->|保存済みデータ| Evaluator
-    Evaluator -->|アラート条件成立| Notifier
+    Timer -->|起動| Price
+    Timer -->|起動| News
+    Price -->|株価・前日比| Store
+    News -->|新着ニュース| Evaluator
+    Store -->|保存済みアラート履歴| Evaluator
+    Evaluator -->|重要度・センチメント| Notifier
+    Price -->|マイルストーン到達| Notifier
 ```
 
 ---
 
 ## 処理フロー詳細
 
-1. **スケジューラ** が設定間隔で Fetcher を起動
-2. **Fetcher** が外部証券 API を叩き、株価・指標データを取得してストアに保存
-3. **Evaluator** がストアのデータに対して監視ルールを評価
-4. 条件が成立したら **Notifier** が Slack / Webhook 等へ通知を送信
+1. **Azure Functions タイマートリガー**（5分間隔）が起動
+2. **price.py** が yfinance から株価を取得し、前日比がマイルストーン（閾値の倍数）を超えたら即時アラート
+3. **news.py** が Google News RSS を検索し新着記事を抽出
+4. **evaluator.py** が OpenRouter へ記事内容を投げ、重要度（1〜10）・センチメント・下落パターンを LLM 判定
+5. 条件成立時は **notifier.py** が Discord Webhook（株価用 / ニュース用）へ送信
 
 ---
 
-## スケーリング方針
+## 並列処理の仕組み
 
-- 取得対象銘柄の増加 → Fetcher を水平スケール（並列取得）
-- ルール評価の高頻度化 → Evaluator をキューベースに切り出し
-- 通知先の追加 → Notifier をプラグイン方式で拡張
+- 銘柄ごとの処理は `_concurrent.py`（`ThreadPoolExecutor` ラッパー）で並列実行
+- 同時実行数は `config.json` の `max_parallel_stocks` で調整
+- ステート（送信済みGUID・アラート日）は `state.py` が管理し、5分ごとの重複通知を防止
 
 ---
 
 ## まとめ
 
-各コンポーネントが**疎結合**で設計されているため、取得・評価・通知それぞれを独立して差し替え・スケールアップできます。
+Azure Functions の単一タイマートリガーで完結するシンプルな構成です。銘柄数のスケールは `max_parallel_stocks` の調整で対応できます。
