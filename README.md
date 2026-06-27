@@ -1,6 +1,6 @@
 # stock-monitor-docs
 
-**stock-monitor**（株価監視・自動売買システム）の概説ドキュメントサイトです。はじめての人が読み物として通読できる概説を VitePress で配信します。
+**stock-monitor**（株価監視・歪み検知システム）の概説ドキュメントサイトです。はじめての人が読み物として通読できる概説を VitePress で配信します。
 
 **公開サイト**: https://stock-monitor-docs.vercel.app/
 
