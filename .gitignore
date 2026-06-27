@@ -8,3 +8,8 @@ docs/.vitepress/cache/
 
 .claude/*
 CLAUDE.md
+
+# Slidev ビルド・エクスポート生成物
+dist/
+slides/**/dist/
+*.pdf

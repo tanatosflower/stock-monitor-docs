@@ -7,9 +7,13 @@
   "scripts": {
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "docs:preview": "vitepress preview docs",
+    "slides:dev": "slidev",
+    "slides:build": "slidev build",
+    "slides:export": "slidev export"
   },
   "devDependencies": {
+    "@slidev/cli": "^51.0.0",
     "markdown-it-cjk-friendly": "^2.0.2",
     "mermaid": "^11.4.1",
     "vitepress": "^1.6.4",
