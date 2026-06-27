@@ -20,7 +20,7 @@ npm run docs:preview        # ビルド結果のプレビュー
 
 ## 技術スタック / 主要設定
 
-- **VitePress 1.6.4**（ESM, `type: module`）
+- **VitePress 1.6 系**（ESM, `type: module`。実バージョンは `package.json` 参照）
 - **vitepress-plugin-mermaid** + mermaid 11（フロー図を Markdown 内で使用）
 - **markdown-it-cjk-friendly**（CJK の `**bold**` が壊れる問題への対処）
 - 設定の中心は `docs/.vitepress/config.ts`（lang ja-JP, nav/sidebar, ローカル検索, mermaid テーマ変数, cleanUrls）
@@ -35,7 +35,7 @@ npm run docs:preview        # ビルド結果のプレビュー
 
 ## ディレクトリ構成
 
-[README.md] に記載
+README.md の「構成」セクションに記載
 
 ## リポジトリ管理のルール
 
@@ -50,13 +50,9 @@ npm run docs:preview        # ビルド結果のプレビュー
 
 ## mermaid / CJK の調整箇所
 
-| 目的 | ファイル | 変更箇所 |
-| --- | --- | --- |
-| フォント・文字サイズ（CJK グリフ切れ対策） | `docs/.vitepress/config.ts` | `mermaid.themeVariables.fontFamily` / `fontSize` |
-| mermaid 図の中央寄せ | `docs/.vitepress/theme/custom.css` | `.mermaid` の flex 設定 |
-| 表セルの日本語折返し | `docs/.vitepress/theme/custom.css` | `.vp-doc th, .vp-doc td` の `word-break` |
+詳細は `CONTRIBUTING.md` の「mermaid / CJK の保守メモ」セクションに集約している（編集者向け情報の正本）。
 
-## plan 作成時及び `plan-reviewer` レビュー完了時のルール
+## plan 作成時および承認前の `plan-reviewer` レビューのルール
 
 - プランモードで実装プランを立てたら、**プランファイルに書き出した上で**、ExitPlanMode（プラン承認）を呼ぶ前に必ず `plan-reviewer` サブエージェントにそのプランファイルをレビューさせ、`blocking` 指摘を解消してから承認へ進むこと（軽微・trivial なプランも除外しない＝無条件。プラン段階での手戻り防止）。
 - `plan-reviewer` サブエージェントのレビューサマリーはユーザに同じ内容を通知すること。
@@ -64,9 +60,12 @@ npm run docs:preview        # ビルド結果のプレビュー
 ## ドキュメント編集のルール
 
 - `docs/guide/` に md を追加したら `config.ts` の nav / sidebar も手動更新する
-- frontmatter に `title` と `description` を必ず付ける
+- frontmatter に `title` と `description` を必ず付ける（手書き必須）
+- `version` は手書きしない。`docs/.vitepress/config.ts` の `SITE_VERSION`（SSOT）が `guide/` 配下へ一括注入し、本文は `{{ $frontmatter.version }}` で参照する。バージョンを上げるときは `SITE_VERSION` だけ変更する
 - 文体規約: **全面日本語・ですます調の読み物トーン**。本体側 docs の硬いリファレンス調とは別物
 - `**bold**` は CJK プラグイン前提で問題ない
 - mermaid フロー図を積極的に使う
-- md を追加・編集したら `npm run lint` でチェックを通すこと。自動整形は `npm run lint:fix`
+- md を追加・編集したら `npm run lint` でチェックを通すこと（`docs/**/*.md` が対象）。自動整形は `npm run lint:fix`
+- `slides/` 配下の Slidev デッキを編集するときは `SLIDES.md` を参照（デプロイ・CI 対象外）
 - 本体 private リポジトリ `stock-monitor` のファイルは読込のみ。絶対に編集しないこと。
+- ページ追加の具体的な手順（frontmatter 雛形・config.ts 更新・lint まで）は `CONTRIBUTING.md` を参照
