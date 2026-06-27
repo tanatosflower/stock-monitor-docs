@@ -1,7 +1,7 @@
 # slides/ — Slidev デッキ置き場
 
 ローカル発表・PDF エクスポート専用のスライドデッキを置くディレクトリです。
-**デプロイ・CI の対象外**です（`deploy.yml` は VitePress のビルドのみ確認）。
+**デプロイ・CI の対象外**です（`build-check.yml` は VitePress のビルドのみ確認）。
 
 ## デッキ一覧
 

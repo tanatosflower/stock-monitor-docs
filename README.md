@@ -1,8 +1,10 @@
 # stock-monitor-docs
 
-[stock-monitor](https://github.com/) の解説ドキュメントサイトです。リファレンス級の内部ドキュメントとは別に、**はじめての人が読み物として通読できる概説**を VitePress で配信します。
+**stock-monitor**（株価監視・自動売買システム）の概説ドキュメントサイトです。はじめての人が読み物として通読できる概説を VitePress で配信します。
 
-本体（アプリのコード）は private リポジトリにあります。この公開リポジトリには、人間が読むための概説 Markdown だけを置きます。コードパスや内部仕様を露出するリファレンスは同期しません。
+**公開サイト**: https://stock-monitor-docs.vercel.app/
+
+本体（アプリのコード）は **private リポジトリ** にあります。本体のコードパス・内部仕様は公開しません。**この docs リポジトリ自身は公開**で、人間が読む概説 Markdown だけを置きます。
 
 ## 構成
 
@@ -18,19 +20,20 @@ stock-monitor-docs/
 │   └── guide/
 │       ├── overview.md        # アプリ解説・システム全体像
 │       ├── features.md        # 機能ガイド
-│       └── development.md     # 開発プロセスの説明
+│       ├── development.md     # 開発プロセスの説明
+│       └── operations.md      # 運用・チューニングガイド
 ├── slides/
 │   ├── intro.md               # 概要紹介デッキ（雛形）
 │   ├── architecture.md        # システム構成デッキ（mermaid 図付き、雛形）
 │   └── README.md              # デッキ作成・起動方法メモ
 ├── package.json
 └── .github/workflows/
-    └── deploy.yml             # ビルド確認用 CI
+    └── build-check.yml        # ビルド確認用 CI（実デプロイは Vercel/Netlify）
 ```
 
 ## ローカルで動かす
 
-Node.js 18 以上を推奨。
+Node.js 18 以上を推奨（CI は 20）。
 
 ```bash
 npm install
@@ -41,25 +44,24 @@ npm run docs:dev        # http://localhost:5173 で起動
 
 ```bash
 npm run docs:build      # 出力は docs/.vitepress/dist
-npm run docs:preview    # ビルド結果をローカル配信
+npm run docs:preview    # ビルド結果をローカル確認
 ```
+
+認証情報は一切不要です。本体 `stock-monitor` が必要とする API キー類はこのサイトのビルドには不要です。
 
 ## デプロイ（Vercel / Netlify）
 
-どちらも GUI でリポジトリを連携し、以下を指定するだけです。
+実際のデプロイは Vercel または Netlify が行います。リポジトリ内の CI（`build-check.yml`）はビルドが通るかの確認だけです。
+
+GUI でリポジトリを連携し、以下を指定します:
 
 | 項目 | 値 |
 | --- | --- |
 | Build command | `npm run docs:build` |
 | Output directory | `docs/.vitepress/dist` |
 | Install command | `npm install` |
-| Node version | 18 以上 |
 
 push のたびに自動でビルド＆デプロイされます。
-
-## 日本語の全文検索について
-
-標準のローカル検索（minisearch）でも日本語は引けますが、語の区切り（トークナイズ）が弱く、ヒット精度が物足りないことがあります。実用で困ったら [Algolia DocSearch](https://docsearch.algolia.com/) への切り替えを検討してください（`config.ts` の `search.provider` を差し替え）。
 
 ## スライド（Slidev）
 
@@ -93,8 +95,10 @@ npm run slides:export -- slides/intro.md
 > [!NOTE]
 > エクスポートには Playwright のブラウザバイナリが必要です。初回実行時に Slidev がインストールを促します（`npx playwright install chromium`）。
 
-## mermaid / CJK について
+## ページを追加・保守するには
 
-概説内のフロー図は [mermaid](https://mermaid.js.org/) で描いています。`vitepress-plugin-mermaid` を `config.ts` の `withMermaid()` で有効化済みです。
+mermaid・CJK 対応やページ追加手順、日本語検索の注意点など、編集者向けの情報は [CONTRIBUTING.md](./CONTRIBUTING.md) にまとめています。
 
-CJK の `**bold**` が壊れる問題は `markdown-it-cjk-friendly` プラグインで対処しています。フォントサイズや CJK グリフ切れの調整は `config.ts` の `mermaid.themeVariables`、図の中央寄せや表セルの折返しは `theme/custom.css` で行っています。
+## License
+
+[MIT License](./LICENSE) — Copyright (c) 2026 tanatosflower
