@@ -34,7 +34,7 @@
 | mermaid 図の中央寄せ | `docs/.vitepress/theme/custom.css` | `.mermaid` の flex 設定 |
 | 表セルの日本語折返し | `docs/.vitepress/theme/custom.css` | `.vp-doc th, .vp-doc td` の `word-break` |
 
-CJK の `**bold**` が壊れる問題は `markdown-it-cjk-friendly` プラグインで対処しています（VitePress 2.0 の標準と同等の挙動）。
+CJK の `**bold**` が壊れる問題は `markdown-it-cjk-friendly` プラグインで対処しています（cjk-friendly は VitePress 2.0 が標準採用する挙動を 1.x に先取りするものです）。
 
 ## 日本語の全文検索について
 
