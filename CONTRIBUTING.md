@@ -22,6 +22,7 @@
 
 3. `docs/.vitepress/config.ts` の `nav` と `sidebar` を手動で更新する（自動追加はされません）
 4. ローカルで `npm run docs:dev` を起動して表示を確認する
+5. PR を出す前に `npm run lint` でチェックを通す（自動整形は `npm run lint:fix`）
 
 ## mermaid / CJK の保守メモ
 

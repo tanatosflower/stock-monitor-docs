@@ -1,0 +1,19 @@
+// markdownlint-cli2 設定
+// 対象ファイルは npm script 引数で指定（"docs/**/*.md"）
+{
+  "ignores": [
+    "slides/**",
+    "node_modules/**",
+    "docs/.vitepress/dist/**"
+  ],
+  "config": {
+    // MD013: 行長制限は日本語には不適
+    "MD013": false,
+    // MD025: VitePress では frontmatter title と md 内 # H1 が共存する構造のため
+    "MD025": false,
+    // MD033: VitePress の ::: custom container や HTML コメントを許容
+    "MD033": false,
+    // MD041: docs/index.md は layout:home で H1 なし
+    "MD041": false
+  }
+}
