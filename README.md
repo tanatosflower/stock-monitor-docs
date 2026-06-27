@@ -24,8 +24,8 @@ stock-monitor-docs/
 │       └── operations.md      # 運用・チューニングガイド
 ├── slides/
 │   ├── intro.md               # 概要紹介デッキ（雛形）
-│   ├── architecture.md        # システム構成デッキ（mermaid 図付き、雛形）
-│   └── README.md              # デッキ作成・起動方法メモ
+│   └── architecture.md        # システム構成デッキ（mermaid 図付き、雛形）
+├── SLIDES.md                  # Slidev デッキ起動・エクスポート・追加手順
 ├── package.json
 └── .github/workflows/
     └── build-check.yml        # ビルド確認用 CI（実デプロイは Vercel/Netlify）
@@ -65,35 +65,7 @@ push のたびに自動でビルド＆デプロイされます。
 
 ## スライド（Slidev）
 
-`slides/` 配下に [Slidev](https://sli.dev/) のデッキを置きます。**ローカル発表・PDF エクスポート専用**で、デプロイ対象・CI 対象にはしていません。
-
-### デッキの起動
-
-```bash
-npm run slides:dev -- slides/intro.md        # http://localhost:3030
-npm run slides:dev -- slides/architecture.md
-```
-
-> [!IMPORTANT]
-> `-- slides/<name>.md` でデッキファイルを必ず指定してください。省略すると cwd の `slides.md` を探して失敗します。
-
-### 複数デッキの運用
-
-デッキごとに `slides/<name>.md` として独立したファイルを作ります。起動・エクスポート時に対象ファイルを引数で渡すだけで、設定追加は不要です。
-
-```bash
-# 例: 新しいデッキを追加したら同じように起動できる
-npm run slides:dev -- slides/my-new-deck.md
-```
-
-### PDF エクスポート
-
-```bash
-npm run slides:export -- slides/intro.md
-```
-
-> [!NOTE]
-> エクスポートには Playwright のブラウザバイナリが必要です。初回実行時に Slidev がインストールを促します（`npx playwright install chromium`）。
+`slides/` 配下に [Slidev](https://sli.dev/) のデッキを置きます（ローカル発表・PDF エクスポート専用、デプロイ・CI 対象外）。デッキの起動・エクスポート・追加手順は [SLIDES.md](./SLIDES.md) にまとめています。
 
 ## ページを追加・保守するには
 
