@@ -19,7 +19,7 @@
     "lint:fix:md": "markdownlint-cli2 --fix \"docs/**/*.md\""
   },
   "devDependencies": {
-    "@slidev/cli": "^51.0.0",
+    "@slidev/cli": "^52.16.0",
     "@slidev/theme-default": "^0.25.0",
     "markdown-it-cjk-friendly": "^2.0.2",
     "markdownlint-cli2": "^0.22.1",
